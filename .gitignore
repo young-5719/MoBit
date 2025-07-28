@@ -39,3 +39,7 @@ out/
 
 ### DB ###
 mobit.sql
+sampleData.sql
+
+### yaml ###
+src/main/resources/application_dev_db.yaml

@@ -1,0 +1,15 @@
+# application-dev_db.yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mobit
+    username: mobit_dev
+    password: mobit
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
