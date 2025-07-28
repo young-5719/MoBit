@@ -4,34 +4,33 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "answers")
 public class Answer {
+
     @Id
-    @Column(name = "answer_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "answer_no")
     private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "question_no", nullable = false)
-    private Question questionNo;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Question question;
 
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "answer_created_at", nullable = false)
-    private Instant answerCreatedAt;
+    @CreationTimestamp
+    @Column(name = "answer_created_at", nullable = false, updatable = false)
+    private LocalDateTime answerCreatedAt;
 
-    @Lob
-    @Column(name = "answer_cont")
+    @Column(name = "answer_cont", columnDefinition = "TEXT")
     private String answerCont;
-
 }

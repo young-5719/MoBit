@@ -5,30 +5,29 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "faq")
 public class Faq {
+
     @Id
-    @Column(name = "faq_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "faq_no")
     private Integer id;
 
-    @Lob
-    @Column(name = "faq_cont")
+    @Column(name = "faq_cont", columnDefinition = "TEXT")
     private String faqCont;
 
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "faq_created_at", nullable = false)
-    private Instant faqCreatedAt;
+    @CreationTimestamp
+    @Column(name = "faq_created_at", nullable = false, updatable = false)
+    private LocalDateTime faqCreatedAt;
 
     @Size(max = 255)
-    @Column(name = "faq_title")
+    @Column(name = "faq_title", length = 255)
     private String faqTitle;
-
 }

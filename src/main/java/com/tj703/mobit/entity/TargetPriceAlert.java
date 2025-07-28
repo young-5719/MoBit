@@ -15,23 +15,24 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "target_price_alerts")
 public class TargetPriceAlert {
+
     @Id
-    @Column(name = "target_price_alerts_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "target_price_alerts_no")
     private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
-    @Size(max = 50)
     @NotNull
+    @Size(max = 50)
     @Column(name = "market", nullable = false, length = 50)
     private String market;
 
     @NotNull
     @Column(name = "target_price", nullable = false, precision = 20, scale = 2)
     private BigDecimal targetPrice;
-
 }

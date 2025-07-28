@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,18 +16,20 @@ import java.time.Instant;
 @Entity
 @Table(name = "user_assets")
 public class UserAsset {
+
     @Id
-    @Column(name = "asset_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "asset_id")
     private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
-    @Size(max = 50)
     @NotNull
+    @Size(max = 50)
     @Column(name = "market", nullable = false, length = 50)
     private String market;
 
@@ -40,8 +41,12 @@ public class UserAsset {
     @Column(name = "avg_price", nullable = false, precision = 20, scale = 2)
     private BigDecimal avgPrice;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @PrePersist
+    @PreUpdate
+    public void updateTimestamp() {
+        this.updatedAt = Instant.now();
+    }
 }

@@ -3,7 +3,6 @@ package com.tj703.mobit.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,30 +11,26 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "notification_settings")
 public class NotificationSetting {
+
     @Id
-    @Column(name = "user_no", nullable = false)
-    private Integer id;
+    @Column(name = "user_no")
+    private Integer userNo;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_no", nullable = false)
-    private User users;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
-    @ColumnDefault("0")
-    @Column(name = "volatility_yn")
-    private Boolean volatilityYn;
+    @Column(name = "volatility_yn", nullable = false)
+    private Boolean volatilityYn = false;
 
-    @ColumnDefault("0")
-    @Column(name = "portfolio_yn")
-    private Boolean portfolioYn;
+    @Column(name = "portfolio_yn", nullable = false)
+    private Boolean portfolioYn = false;
 
-    @ColumnDefault("0")
-    @Column(name = "target_price_yn")
-    private Boolean targetPriceYn;
+    @Column(name = "target_price_yn", nullable = false)
+    private Boolean targetPriceYn = false;
 
-    @ColumnDefault("0")
-    @Column(name = "trade_yn")
-    private Boolean tradeYn;
-
+    @Column(name = "trade_yn", nullable = false)
+    private Boolean tradeYn = false;
 }

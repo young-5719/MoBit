@@ -5,53 +5,53 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "coin_transactions")
 public class CoinTransaction {
+
     @Id
-    @Column(name = "trans_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "trans_no")
     private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
-    @Size(max = 50)
     @NotNull
+    @Size(max = 50)
     @Column(name = "market", nullable = false, length = 50)
     private String market;
 
-    @Size(max = 20)
     @NotNull
+    @Size(max = 20)
     @Column(name = "transaction_type", nullable = false, length = 20)
-    private String transactionType;
+    private String transactionType; // 예: BUY, SELL
 
     @NotNull
-    @Column(name = "price", nullable = false, precision = 20, scale = 2)
+    @Column(name = "price", precision = 20, scale = 2, nullable = false)
     private BigDecimal price;
 
     @NotNull
-    @Column(name = "transaction_cnt", nullable = false, precision = 20, scale = 8)
+    @Column(name = "transaction_cnt", precision = 20, scale = 8, nullable = false)
     private BigDecimal transactionCnt;
 
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "transaction_date", nullable = false)
-    private Instant transactionDate;
+    @CreationTimestamp
+    @Column(name = "transaction_date", nullable = false, updatable = false)
+    private LocalDateTime transactionDate;
 
     @Size(max = 20)
     @Column(name = "transaction_state", length = 20)
-    private String transactionState;
-
+    private String transactionState; // 예: PENDING, COMPLETED
 }

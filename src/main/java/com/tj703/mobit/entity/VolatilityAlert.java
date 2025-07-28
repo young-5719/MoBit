@@ -13,19 +13,20 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "volatility_alerts")
 public class VolatilityAlert {
+
     @Id
-    @Column(name = "volatility_alerts_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "volatility_alerts_no")
     private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
-    @Size(max = 50)
     @NotNull
+    @Size(max = 50)
     @Column(name = "market", nullable = false, length = 50)
     private String market;
-
 }

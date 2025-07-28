@@ -5,46 +5,45 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "questions")
 public class Question {
+
     @Id
-    @Column(name = "question_no", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "question_no")
     private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_no", nullable = false)
-    private User userNo;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
-    @Lob
-    @Column(name = "question_cont")
+    @Column(name = "question_cont", columnDefinition = "TEXT")
     private String questionCont;
 
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "question_created_at", nullable = false)
-    private Instant questionCreatedAt;
+    @CreationTimestamp
+    @Column(name = "question_created_at", nullable = false, updatable = false)
+    private LocalDateTime questionCreatedAt;
 
     @Size(max = 255)
-    @Column(name = "question_title")
+    @Column(name = "question_title", length = 255)
     private String questionTitle;
 
     @Size(max = 20)
     @Column(name = "question_status", length = 20)
-    private String questionStatus;
+    private String questionStatus; // 예: WAITING, ANSWERED
 
     @Size(max = 20)
     @Column(name = "question_option", length = 20)
-    private String questionOption;
-
+    private String questionOption; // 예: GENERAL, TECHNICAL, BUG
 }
