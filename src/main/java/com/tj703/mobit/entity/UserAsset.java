@@ -49,4 +49,11 @@ public class UserAsset {
     public void updateTimestamp() {
         this.updatedAt = Instant.now();
     }
+    public UserAsset(User user, String market, BigDecimal quantity) {
+        this.user = user;
+        this.market = market;
+        this.quantity = quantity;
+        this.avgPrice = BigDecimal.ZERO; // 초깃값 필수
+        this.updatedAt = Instant.now();
+    }
 }
