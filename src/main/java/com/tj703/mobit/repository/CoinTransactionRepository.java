@@ -10,5 +10,6 @@ import java.util.List;
 public interface CoinTransactionRepository extends JpaRepository<CoinTransaction, Integer> {
 
     Page<CoinTransaction> findByUser_UserNo(Integer userNo, Pageable pageable);
+    Page<CoinTransaction> findByUser_UserNoAndTransactionState(Integer userNo, String transactionState, Pageable pageable);
 }
 

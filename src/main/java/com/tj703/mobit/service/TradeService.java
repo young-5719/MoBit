@@ -12,6 +12,10 @@ import com.tj703.mobit.repository.CoinTransactionRepository;
 import com.tj703.mobit.repository.UserAssetRepository;
 import com.tj703.mobit.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -209,5 +213,25 @@ public class TradeService {
                 .transactionState(saved.getTransactionState())
                 .transactionDate(saved.getTransactionDate())
                 .build();
+    }
+
+    // 미체결 목록 조회  //
+    @Transactional(readOnly = true)
+    public Page<CoinTransactionResponseDto> getOpenOrders(Integer userNo, int page, int size) {
+        int adjustedPage = Math.max(0, page - 1);
+        Pageable pageable = PageRequest.of(adjustedPage, size, Sort.by(Sort.Direction.DESC, "transactionDate"));
+
+        Page<CoinTransaction> result = transactionRepository.findByUser_UserNoAndTransactionState(
+                userNo, "PENDING", pageable);
+
+        return result.map(tx -> CoinTransactionResponseDto.builder()
+                .id(tx.getId())
+                .market(tx.getMarket())
+                .transactionType(tx.getTransactionType())
+                .price(tx.getPrice())
+                .transactionCnt(tx.getTransactionCnt())
+                .transactionState(tx.getTransactionState())
+                .transactionDate(tx.getTransactionDate())
+                .build());
     }
 }
