@@ -64,4 +64,11 @@ public class TradeController {
         Page<CoinTransactionResponseDto> openOrders = tradeService.getOpenOrders(userNo, page, size);
         return ResponseEntity.ok(openOrders);
     }
+
+    @Operation(summary = "미체결 주문 취소", description = "PENDING 상태의 거래만 취소 가능하며 자산은 복구됩니다.")
+    @DeleteMapping("/{transactionId}")
+    public ResponseEntity<Void> cancelPendingOrder(@PathVariable Integer transactionId) {
+        tradeService.cancelPendingOrder(transactionId);
+        return ResponseEntity.noContent().build();
+    }
 }

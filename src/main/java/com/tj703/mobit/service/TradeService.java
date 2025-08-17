@@ -234,4 +234,46 @@ public class TradeService {
                 .transactionDate(tx.getTransactionDate())
                 .build());
     }
+
+    // 미체결 주문 취소 //
+    @Transactional
+    public void cancelPendingOrder(Integer transactionId) {
+        CoinTransaction tx = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("거래를 찾을 수 없습니다."));
+
+        if (!"PENDING".equals(tx.getTransactionState())) {
+            throw new RuntimeException("PENDING 상태의 주문만 취소할 수 있습니다.");
+        }
+
+        User user = tx.getUser();
+        String market = tx.getMarket();
+        BigDecimal quantity = tx.getTransactionCnt();
+        BigDecimal price = tx.getPrice();
+
+        if ("BUY".equalsIgnoreCase(tx.getTransactionType())) {
+            // 복구 대상: KRW
+            BigDecimal refund = price.multiply(quantity);
+
+            UserAsset krwAsset = userAssetRepository.findByUserAndMarket(user, "KRW")
+                    .orElseThrow(() -> new RuntimeException("KRW 자산을 찾을 수 없습니다."));
+
+            krwAsset.setQuantity(krwAsset.getQuantity().add(refund));
+            userAssetRepository.save(krwAsset);
+
+        } else if ("SELL".equalsIgnoreCase(tx.getTransactionType())) {
+            // 복구 대상: 매도한 코인
+            UserAsset coinAsset = userAssetRepository.findByUserAndMarket(user, market)
+                    .orElse(new UserAsset(user, market, BigDecimal.ZERO));
+
+            coinAsset.setQuantity(coinAsset.getQuantity().add(quantity));
+            userAssetRepository.save(coinAsset);
+
+        } else {
+            throw new RuntimeException("유효하지 않은 거래 타입입니다.");
+        }
+
+        // 상태 변경
+        tx.setTransactionState("CANCELLED");
+        transactionRepository.save(tx);
+    }
 }
